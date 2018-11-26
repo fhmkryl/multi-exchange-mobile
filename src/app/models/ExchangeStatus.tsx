@@ -1,0 +1,4 @@
+enum ExchangeStatus {
+    Stopped,
+    Running
+}
