@@ -18,10 +18,10 @@ const mainReducer = (state: any = initState, action: any) => {
         tickersByExchange: action.tickersByExchange
       };
     case 'ADD_OR_UPDATE_TICKER_BY_EXCHANGE':
-      let newTickersByExchange = addOrUpdateTickerByExchange(state.tickersByExchange,action.ticker);
+      let arr = updateObjectInArray(state.tickersByExchange, action);
       return {
         ...state,
-        tickersByExchange: newTickersByExchange
+        tickersByExchange: arr
       };
     default:
       break;
@@ -29,9 +29,35 @@ const mainReducer = (state: any = initState, action: any) => {
   return state;
 }
 
+function updateObjectInArray(array: any, action: any) {
+  let newTicker = action.ticker;
+  if(array.length === 0) {
+      return [...array, newTicker];
+  }
+
+  let existingTicker = array.find((item: any) => item.symbol === newTicker.symbol);
+  if(existingTicker){
+    existingTicker.price = newTicker.price;
+    return [...array];
+  }
+  else{
+    return [...array, newTicker];
+  }
+  
+//   return array.map((item: any, index: any) => {
+//     if (index !== action.index) {
+//       return item
+//     }
+// ​
+//     // Otherwise, this is the one we want - return an updated value
+//     return {
+//       ...item,
+//       ...action.item
+//     }
+//   });
+}
+
 const addOrUpdateTickerByExchange = (tickerList : TickerModel[], ticker: TickerModel) : TickerModel[] => {
-  let newTickersList: TickerModel[] = [];
-  console.log(tickerList.length);
   if(tickerList.length > 0){
     let existingTicker = tickerList.find((item) => item.exchangeName === ticker.exchangeName && item.symbol === ticker.symbol);
     if(existingTicker){
@@ -39,13 +65,13 @@ const addOrUpdateTickerByExchange = (tickerList : TickerModel[], ticker: TickerM
       existingTicker.lastUpdateTime = ticker.lastUpdateTime;
     }
     else{
-      newTickersList.push(ticker);
+      tickerList.push(ticker);
     }
   }else{
     tickerList.push(ticker);
   }
 
-  return newTickersList;
+  return tickerList;
 }
 
 export default mainReducer;

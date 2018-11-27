@@ -33,9 +33,7 @@ class ExchangeListPage extends React.Component<ExchangeListPageProps> {
     componentDidMount = () => {
         let self = this;
         const socket = socketIOClient('http://localhost:2999');
-        console.log(socket);
         socket.on('onExchangesReceived', function(data: any) {
-            console.log(data);
             let exchanges: ExchangeModel[] = [];
                 data.exchangeList.forEach((exchange: any, index: number, arr: any) => {
                     let item = new ExchangeModel(exchange);
