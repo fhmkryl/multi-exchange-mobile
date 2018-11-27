@@ -1,80 +1,49 @@
-import ExchangeList from './ExchangeList';
-import ExchangeViewModel from 'app/models/ExchangeModel';
-import * as signalR from "@aspnet/signalr";
-import { connect } from 'react-redux';
 import * as React from 'react';
+import ExchangeList from './ExchangeList';
+import ExchangeModel from 'app/models/ExchangeModel';
+import { connect } from 'react-redux';
+import socketIOClient from 'socket.io-client';
 
-// interface ExchangeListPageProps {
-//     getAllExchanges: (exchanges: ExchangeViewModel[]) => ExchangeViewModel[],
-//     exchanges: ExchangeViewModel[]
-// }
+interface ExchangeListPageProps {
+    getAllExchanges: (exchanges: ExchangeModel[]) => ExchangeModel[],
+    exchanges: ExchangeModel[]
+}
 
-// interface ExchangeListPageState {
-//     exchanges: ExchangeViewModel[]
-// }
+class ExchangeListPage extends React.Component<ExchangeListPageProps> {
+    state = {
+        exchanges: []
+    };
 
-class ExchangeListPage extends React.Component<any, {}, any> {
-    private _hubConnection: signalR.HubConnection;
-
-    constructor(props: any) {
+    constructor(props: ExchangeListPageProps) {
         super(props);
-
-        this.state = {
-            exchanges : props.exchanges
-        };
-
-        this._hubConnection = new signalR
-            .HubConnectionBuilder()
-            .withUrl('https://localhost:44316/exchange')
-            .configureLogging(signalR.LogLevel.Debug)
-            .build();
     }
 
-    startExchange = (exchange: ExchangeViewModel) => {
+    startExchange = (exchange: ExchangeModel) => {
         alert('Started ' + exchange.name);
     }
 
-    stopExchange = (exchange: ExchangeViewModel) => {
+    stopExchange = (exchange: ExchangeModel) => {
         alert('Stopped ' + exchange.name);
     }
 
-    viewExchangeMarkets = (exchange: ExchangeViewModel) => {
+    viewExchangeMarkets = (exchange: ExchangeModel) => {
         alert('View markets for ' + exchange.name);
     }
 
     componentDidMount = () => {
-        this.registerOnServerEvents();
-        this.startConnection();
-    }
-
-    private startConnection() {
-        this
-            ._hubConnection
-            .start()
-            .then(() => {
-                console.log('Hub connection started');
-
-                // Invoke method
-                this
-                    ._hubConnection
-                    .invoke('SubscribeToExchangeList');
-            });
-    }
-
-    private registerOnServerEvents(): void {
-        this
-            ._hubConnection
-            .on('onReceivedExchangeList', (response: any) => {
-                let exchanges: ExchangeViewModel[] = [];
-                response.forEach((exchange: any, index: number, arr: any) => {
-                    let item = new ExchangeViewModel(exchange);
+        let self = this;
+        const socket = socketIOClient('http://localhost:2999');
+        console.log(socket);
+        socket.on('onExchangesReceived', function(data: any) {
+            console.log(data);
+            let exchanges: ExchangeModel[] = [];
+                data.exchangeList.forEach((exchange: any, index: number, arr: any) => {
+                    let item = new ExchangeModel(exchange);
                     exchanges.push(item);
                 });
 
-                this
-                    .props
-                    .getAllExchanges(exchanges);
-            });
+            self.props.getAllExchanges(exchanges);
+        });
     }
 
     render() {
@@ -99,7 +68,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        getAllExchanges: (exchanges: ExchangeViewModel[]) => {
+        getAllExchanges: (exchanges: ExchangeModel[]) => {
             dispatch({ type: 'GET_ALL_EXCHANGES_ACTION', exchanges: exchanges })
         }
     }

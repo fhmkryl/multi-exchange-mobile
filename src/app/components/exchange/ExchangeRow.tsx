@@ -1,13 +1,13 @@
 import * as React from "react";
-import ExchangeViewModel from "app/models/ExchangeModel";
+import ExchangeModel from "app/models/ExchangeModel";
 import { ListItem, ListItemText, Button, Divider } from "@material-ui/core";
 import * as moment from 'moment'
 
 interface ExchangeRowProps {
-    exchange: ExchangeViewModel,
-    startExchange: (exchange: ExchangeViewModel) => void,
-    stopExchange: (exchange: ExchangeViewModel) => void,
-    viewExchangeMarkets: (exchange: ExchangeViewModel) => void,
+    exchange: ExchangeModel,
+    startExchange: (exchange: ExchangeModel) => void,
+    stopExchange: (exchange: ExchangeModel) => void,
+    viewExchangeMarkets: (exchange: ExchangeModel) => void,
 }
 
 class ExchangeRow extends React.Component<ExchangeRowProps>{
@@ -42,20 +42,6 @@ class ExchangeRow extends React.Component<ExchangeRowProps>{
                         style={{
                             width: 50
                         }} />
-                    <div style={{
-                        width: 100
-                    }}>
-                        <Button variant="contained" color="primary" onClick={() => this.props.startExchange(exchange)}>
-                            Start
-                </Button>
-                    </div>
-                    <div style={{
-                        width: 100
-                    }}>
-                        <Button variant="contained" color="primary" onClick={() => this.props.stopExchange(exchange)}>
-                            Stop
-                </Button>
-                    </div>
                     <div style={{
                         width: 100
                     }}>

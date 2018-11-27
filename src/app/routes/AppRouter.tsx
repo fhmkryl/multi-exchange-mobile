@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import ExchangeListPage from 'app/components/Exchange/ExchangeListPage';
 import Header from 'app/components/common/Header';
 import { Grid } from '@material-ui/core';
-import ExchangeListPageSocketIo from 'app/components/exchange/ExchangeListPageSocketIo';
+import ExchangeListPage from 'app/components/Exchange/ExchangeListPage';
+import TickerByExchangePage from 'app/components/ticker/TickerByExchangePage';
 
 const AppRouter = () => (
   <BrowserRouter>
@@ -24,7 +24,7 @@ const AppRouter = () => (
               <Grid item xs={1}>
                 <Route path="/" component={ExchangeListPage} exact={true} />
                 <Route path="/exchanges" component={ExchangeListPage} exact={true} />
-                <Route path="/exchanges-io" component={ExchangeListPageSocketIo} exact={true} />
+                <Route path="/tickers" component={TickerByExchangePage} exact={true} />
               </Grid>
             </Grid>
           </Grid>

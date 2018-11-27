@@ -11,22 +11,7 @@ export const publicNavs = [
         url: '/exchanges',
         name: 'Markets',
         icon: <StarIcon />
-    },
-    {
-        url: '/exchanges-io',
-        name: 'Markets Socket.Io',
-        icon: <StarIcon />
-    },
-    {
-        url: '/exchanges',
-        name: 'By Exchange',
-        icon: <StarIcon />
-    },
-    {
-        url: '/exchanges',
-        name: 'By Symbol',
-        icon: <StarIcon />
-    },
+    }
 ];
 
 class PublicNav extends React.Component {
