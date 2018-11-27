@@ -12,7 +12,7 @@ const mainReducer = (state: any = initState, action: any) => {
         ...state,
         exchanges: action.exchanges
       };
-    case 'GET_TICKER_BY_EXCHANGE_ACTION':
+    case 'GET_TICKERS_BY_EXCHANGE_ACTION':
       return {
         ...state,
         tickersByExchange: action.tickersByExchange
