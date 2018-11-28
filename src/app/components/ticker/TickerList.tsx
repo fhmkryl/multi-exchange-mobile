@@ -11,12 +11,17 @@ export default class TickerList extends React.Component<TickerListProps> {
     render() {
         const tickerList = this.props.tickerList;
         return (
-            <div style={{ width: 800 }}>
-                <List>
+            <div style={{ width: 600 }}>
+                <List
+                    style = {{
+                        backgroundColor:'black'
+                    }}
+                >
                     {
                         tickerList.map((ticker, index) => {
                             return <TickerRow
                                 key={index}
+                                index = {index}
                                 ticker={ticker} />
                         })
                     }

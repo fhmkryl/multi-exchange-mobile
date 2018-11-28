@@ -3,16 +3,19 @@ import { connect } from 'react-redux';
 import socketIOClient from 'socket.io-client';
 import TickerModel from 'app/models/TickerModel';
 import TickerList from './TickerList';
+import { TextField } from '@material-ui/core';
 
 interface TickerByExchangePageProps {
-    addOrUpdateTickerByExchange : (ticker: TickerModel) => void,
-    getTickersByExchange : (tickers:TickerModel[]) => TickerModel[]
+    filterText: string,
     exchangeName: string,
-    tickersByExchange: TickerModel[]
+    tickersByExchange: TickerModel[],
+    getTickersByExchange : (tickers:TickerModel[]) => TickerModel[],
+    setFilterTickerByExchange: (filterText:string) => void
 }
 
 class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
     state = {
+        filterText: '',
         exchangeName: 'Binance',
         tickersByExchange: []
     };
@@ -31,17 +34,31 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                 tickerList.push(newItem);
             })
             
-            console.log(tickerList);
             self.props.getTickersByExchange(tickerList);
         });
     }
 
+    
+    onSearchChangeHandler = () => (event:any) => {
+        this.props.setFilterTickerByExchange(event.target.value);
+    };
+
     render() {
         const tickers = this.props.tickersByExchange;
         if (tickers && tickers.length > 0) {
-            return (<TickerList
-                        tickerList = {tickers}  
-            />)
+            return (
+                <div>
+                    <TextField
+                        id="standard-search"
+                        label="Search"
+                        type="search"
+                        margin="normal"
+                        style={{width:600}}
+                        onChange = {this.onSearchChangeHandler()}
+                        />
+                    <TickerList tickerList = {tickers} />
+                </div>
+            )
         }
         return (
             <div>Loading...</div>
@@ -52,6 +69,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 const mapStateToProps = (state: any) => {
     return { 
         exchangeName: state.exchangeName,
+        filterTickersByExchangeText : state.filterTickersByExchangeText,
         tickersByExchange: state.tickersByExchange 
     };
 }
@@ -61,9 +79,10 @@ const mapDispatchToProps = (dispatch: any) => {
         getTickersByExchange : (tickers : TickerModel[]) => {
             dispatch({ type: 'GET_TICKERS_BY_EXCHANGE_ACTION', tickersByExchange: tickers })
         },
-        addOrUpdateTickerByExchange : (ticker : TickerModel) => {
-            dispatch({ type: 'ADD_OR_UPDATE_TICKER_BY_EXCHANGE', ticker: ticker })
+        setFilterTickerByExchange:(filterText: string) => {
+            dispatch({ type: 'SET_FILTER_TICKERS_BY_EXCHANGE_ACTION', filterTickersByExchangeText: filterText })
         }
+
     }
 }
 

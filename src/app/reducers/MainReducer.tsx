@@ -2,6 +2,7 @@ import TickerModel from "app/models/TickerModel";
 
 const initState = {
   exchanges: [],
+  filterTickersByExchangeText : '',
   tickersByExchange: []
 }
 
@@ -13,65 +14,24 @@ const mainReducer = (state: any = initState, action: any) => {
         exchanges: action.exchanges
       };
     case 'GET_TICKERS_BY_EXCHANGE_ACTION':
+      let filteredResult = action.tickersByExchange;
+      if(state.filterTickersByExchangeText){
+        filteredResult = filteredResult.filter((item:TickerModel) => 
+                            item.symbol.toLowerCase().indexOf(state.filterTickersByExchangeText.toLowerCase()) > -1);
+      }
       return {
         ...state,
-        tickersByExchange: action.tickersByExchange
+        tickersByExchange: filteredResult
       };
-    case 'ADD_OR_UPDATE_TICKER_BY_EXCHANGE':
-      let arr = updateObjectInArray(state.tickersByExchange, action);
+    case 'SET_FILTER_TICKERS_BY_EXCHANGE_ACTION':
       return {
         ...state,
-        tickersByExchange: arr
+        filterTickersByExchangeText:  action.filterTickersByExchangeText
       };
     default:
       break;
   }
   return state;
-}
-
-function updateObjectInArray(array: any, action: any) {
-  let newTicker = action.ticker;
-  if(array.length === 0) {
-      return [...array, newTicker];
-  }
-
-  let existingTicker = array.find((item: any) => item.symbol === newTicker.symbol);
-  if(existingTicker){
-    existingTicker.price = newTicker.price;
-    return [...array];
-  }
-  else{
-    return [...array, newTicker];
-  }
-  
-//   return array.map((item: any, index: any) => {
-//     if (index !== action.index) {
-//       return item
-//     }
-// ​
-//     // Otherwise, this is the one we want - return an updated value
-//     return {
-//       ...item,
-//       ...action.item
-//     }
-//   });
-}
-
-const addOrUpdateTickerByExchange = (tickerList : TickerModel[], ticker: TickerModel) : TickerModel[] => {
-  if(tickerList.length > 0){
-    let existingTicker = tickerList.find((item) => item.exchangeName === ticker.exchangeName && item.symbol === ticker.symbol);
-    if(existingTicker){
-      existingTicker.price = ticker.price;
-      existingTicker.lastUpdateTime = ticker.lastUpdateTime;
-    }
-    else{
-      tickerList.push(ticker);
-    }
-  }else{
-    tickerList.push(ticker);
-  }
-
-  return tickerList;
 }
 
 export default mainReducer;
