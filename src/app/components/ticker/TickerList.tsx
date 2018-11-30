@@ -14,7 +14,7 @@ export default class TickerList extends React.Component<TickerListProps> {
             <div style={{ width: 600 }}>
                 <List
                     style = {{
-                        backgroundColor:'black'
+                        backgroundColor:'#161616'
                     }}
                 >
                     {

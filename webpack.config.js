@@ -14,7 +14,7 @@ var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 module.exports = {
   context: sourcePath,
   entry: {
-    app: './main.tsx'
+    app: './Index.tsx'
   },
   output: {
     path: outPath,

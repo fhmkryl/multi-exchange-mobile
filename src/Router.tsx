@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Header from 'app/components/common/Header';
-import { Grid } from '@material-ui/core';
+import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 import ExchangeListPage from 'app/components/Exchange/ExchangeListPage';
 import TickerByExchangePage from 'app/components/ticker/TickerByExchangePage';
+import { Grid } from '@material-ui/core';
+import Header from 'app/components/common/Header';
 
-const AppRouter = () => (
-  <BrowserRouter>
-    <div>
+export const AppRouter: React.StatelessComponent<{}> = () => {
+  return (
+    <Router>
+      <div>
       <Switch>
         <React.Fragment>
           <Grid
@@ -24,14 +25,13 @@ const AppRouter = () => (
               <Grid item xs={1}>
                 <Route path="/" component={ExchangeListPage} exact={true} />
                 <Route path="/exchanges" component={ExchangeListPage} exact={true} />
-                <Route path="/tickers" component={TickerByExchangePage} exact={true} />
+                <Route path="/tickers/:exchange" component={TickerByExchangePage} exact={true} />
               </Grid>
             </Grid>
           </Grid>
         </React.Fragment>
       </Switch>
     </div>
-  </BrowserRouter>
-);
-
-export default AppRouter;
+    </Router>
+  );
+}
