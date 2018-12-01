@@ -30,9 +30,9 @@ const theme = createMuiTheme({
                 textTransform: 'none'
             }
         },
-        MuiListItem: {
-            root: {
-
+        MuiTab:{
+            root:{
+                
             }
         }
     }

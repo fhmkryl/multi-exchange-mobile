@@ -25,7 +25,7 @@ export const AppRouter: React.StatelessComponent<{}> = () => {
               <Grid item xs={1}>
                 <Route path="/" component={ExchangeListPage} exact={true} />
                 <Route path="/exchanges" component={ExchangeListPage} exact={true} />
-                <Route path="/tickers/:exchange" component={TickerByExchangePage} exact={true} />
+                <Route path="/by_exchange/:exchange" component={TickerByExchangePage} exact={true} />
               </Grid>
             </Grid>
           </Grid>

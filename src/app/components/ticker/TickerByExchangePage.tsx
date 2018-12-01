@@ -3,49 +3,58 @@ import { connect } from 'react-redux';
 import socketIOClient from 'socket.io-client';
 import TickerModel from 'app/models/TickerModel';
 import TickerList from './TickerList';
-import { TextField, LinearProgress, SnackbarContent, Snackbar, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { TextField, LinearProgress, ListItem, ListItemText, Typography, Tabs, Tab, AppBar, Paper } from '@material-ui/core';
 import { RouteProps } from 'react-router';
 
-interface TickerByExchangePageProps extends RouteProps  {
+interface TickerByExchangePageProps extends RouteProps {
     isLoading: boolean,
     filterText: string,
     exchangeName: string,
     tickersByExchange: TickerModel[],
-    getTickersByExchange : (tickers:TickerModel[]) => TickerModel[],
-    setFilterTickerByExchange: (filterText:string) => void,
-    setIsLoadingFlag : (isLoadingFlag: boolean) => void
+    getTickersByExchange: (tickers: TickerModel[], filterBy: string) => TickerModel[],
+    setFilterTickerByExchange: (filterText: string) => void,
+    setIsLoadingFlag: (isLoadingFlag: boolean) => void
 }
 
 class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
-    state = {
-        isLoading: true,
-        filterText: '',
-        exchangeName: 'Binance',
-        tickersByExchange: []
-    };
-
     constructor(props: TickerByExchangePageProps) {
         super(props);
 
-        console.log(this.props);
+        this.state = {
+            isLoading: true,
+            tabIndex : 0,
+            filterBy:'BTC',
+            filterText: '',
+            exchangeName: this.props.match.params.exchange,
+            tickersByExchange: []
+        };
     }
+
+    handleTabChange = (event: any, value: number) => {
+        let filterBy = 'BTC';
+        if(value === 1){
+            filterBy = 'USDT';
+        }
+
+        this.setState({ tabIndex: value, filterBy: filterBy });
+    };
 
     componentDidMount = () => {
         let self = this;
         const socket = socketIOClient('http://localhost:2999');
-        socket.on('onTickersReceived', function(data: any) {
-            let tickerList : TickerModel [] = [];
+        socket.on('onTickersReceived', function (data: any) {
+            let tickerList: TickerModel[] = [];
             data.tickerList.map((item: any) => {
                 let newItem = new TickerModel(item);
                 tickerList.push(newItem);
-            })
-            
-            self.props.getTickersByExchange(tickerList);
+            });
+
+            self.props.getTickersByExchange(tickerList, self.state.filterBy);
         });
     }
 
-    
-    onSearchChangeHandler = () => (event:any) => {
+
+    onSearchChangeHandler = () => (event: any) => {
         this.props.setIsLoadingFlag(true);
 
         this.props.setFilterTickerByExchange(event.target.value);
@@ -54,33 +63,18 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
     render() {
         const tickers = this.props.tickersByExchange;
         
+        let tabIndex = this.state.tabIndex;
         let loaderPanel = <div></div>;
         let tickersPanel = <div></div>;
-        if(this.props.isLoading){
-            loaderPanel = <div style={{width:600}}>
-                            <LinearProgress variant="query" />
-                        </div>
+        if (this.props.isLoading) {
+            loaderPanel = <div style={{ width: 600 }}>
+                <LinearProgress variant="query" />
+            </div>
         }
-        else{
-            if(tickers.length > 0){
-                tickersPanel = <TickerList tickerList = {tickers} />
-            }
-            else{
-                tickersPanel = <ListItem 
-                                    style={{width:600,backgroundColor:'black'}}
-                                    role={undefined}
-                                    dense
-                                    button
-                                >
-                                    <ListItemText
-                                        primary={<Typography style={{ color: 'green' }}>No data available</Typography>}
-                                        style={{
-                                            width: 50
-                                        }} />
-                                </ListItem>
-            }
+        else {
+            tickersPanel = <TickerList tickerList={tickers} />
         }
-        
+
         return (
             <div>
                 <div>
@@ -91,11 +85,30 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                     label="Search"
                     type="search"
                     margin="normal"
-                    style={{width:600}}
-                    onChange = {this.onSearchChangeHandler()}
-                    />
-                <div>
-                    {tickersPanel}
+                    style={{ width: 600 }}
+                    onChange={this.onSearchChangeHandler()}
+                />
+                <div style={{width:600}}>
+                    <Paper>
+                        <Tabs
+                            value={tabIndex}
+                            onChange={this.handleTabChange}
+                            centered
+                            style={{
+                                backgroundColor: '#3E3E3E',
+                                color:'white'
+                            }}
+                            indicatorColor = 'secondary'
+                        >
+                        <Tab label="BTC"/>
+                        <Tab label="USDT" />
+                        </Tabs>
+                    </Paper>
+                    {
+                        <Typography component="div">
+                             {tickersPanel}
+                        </Typography>
+                    }
                 </div>
             </div>
         )
@@ -103,23 +116,23 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 }
 
 const mapStateToProps = (state: any) => {
-    return { 
+    return {
         isLoading: state.isLoading,
         exchangeName: state.exchangeName,
-        filterTickersByExchangeText : state.filterTickersByExchangeText,
-        tickersByExchange: state.tickersByExchange 
+        filterTickersByExchangeText: state.filterTickersByExchangeText,
+        tickersByExchange: state.tickersByExchange
     };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        setIsLoadingFlag : (isLoading : boolean) => {
+        setIsLoadingFlag: (isLoading: boolean) => {
             dispatch({ type: 'SET_IS_LOADING_ACTION', isLoading: isLoading })
         },
-        getTickersByExchange : (tickers : TickerModel[]) => {
-            dispatch({ type: 'GET_TICKERS_BY_EXCHANGE_ACTION', tickersByExchange: tickers })
+        getTickersByExchange: (tickers: TickerModel[], filterBy: string) => {
+            dispatch({ type: 'GET_TICKERS_BY_EXCHANGE_ACTION', tickersByExchange: tickers, filterBy:filterBy })
         },
-        setFilterTickerByExchange:(filterText: string) => {
+        setFilterTickerByExchange: (filterText: string) => {
             dispatch({ type: 'SET_FILTER_TICKERS_BY_EXCHANGE_ACTION', filterTickersByExchangeText: filterText })
         }
 

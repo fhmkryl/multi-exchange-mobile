@@ -13,15 +13,15 @@ export default class TickerList extends React.Component<TickerListProps> {
         return (
             <div style={{ width: 600 }}>
                 <List
-                    style = {{
-                        backgroundColor:'#161616'
+                    style={{
+                        backgroundColor: '#161616'
                     }}
                 >
                     {
                         tickerList.map((ticker, index) => {
                             return <TickerRow
                                 key={index}
-                                index = {index}
+                                index={index}
                                 ticker={ticker} />
                         })
                     }

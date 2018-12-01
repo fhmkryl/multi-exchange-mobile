@@ -4,12 +4,13 @@ import ExchangeModel from 'app/models/ExchangeModel';
 import { connect } from 'react-redux';
 import socketIOClient from 'socket.io-client';
 import { LinearProgress } from '@material-ui/core';
+import { List } from 'linqts';
 
 interface ExchangeListPageProps {
     isLoading: boolean,
     exchanges: ExchangeModel[],
     getAllExchanges: (exchanges: ExchangeModel[]) => ExchangeModel[],
-    setIsLoadingFlag : (isLoadingFlag: boolean) => void
+    setIsLoadingFlag: (isLoadingFlag: boolean) => void
 }
 
 class ExchangeListPage extends React.Component<ExchangeListPageProps> {
@@ -50,9 +51,10 @@ class ExchangeListPage extends React.Component<ExchangeListPageProps> {
 
     render() {
         const exchanges = this.props.exchanges;
+
         if (this.props.isLoading) {
             return (
-                <div style={{width:600}}>
+                <div style={{ width: 600 }}>
                     <LinearProgress variant="query" />
                 </div>
             )
@@ -70,14 +72,14 @@ class ExchangeListPage extends React.Component<ExchangeListPageProps> {
 
 const mapStateToProps = (state: any) => {
     return {
-        isLoading : state.isLoading,
+        isLoading: state.isLoading,
         exchanges: state.exchanges
     };
 }
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        setIsLoadingFlag : (isLoading : boolean) => {
+        setIsLoadingFlag: (isLoading: boolean) => {
             dispatch({ type: 'SET_IS_LOADING_ACTION', isLoading: isLoading })
         },
         getAllExchanges: (exchanges: ExchangeModel[]) => {

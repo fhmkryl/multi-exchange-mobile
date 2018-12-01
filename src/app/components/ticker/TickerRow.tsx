@@ -26,10 +26,12 @@ class TickerRow extends React.Component<TickerRowProps>{
         const ticker = this.props.ticker;
         let tickerColor = 'white';
         if(ticker.direction === 'Up')
-            tickerColor = 'green';
+            tickerColor = '#8AB82F';
         if(ticker.direction === 'Down')
-            tickerColor = 'red';
+            tickerColor = '#EA0087';
         
+        const bySymbolLink = "/#/by_symbol/"+ticker.symbol;
+
         return (
             <div>
                 <ListItem
@@ -48,12 +50,7 @@ class TickerRow extends React.Component<TickerRowProps>{
                         style={{
                             width: 50
                         }} />
-                    {/* <ListItemText
-                        primary={<Typography style={{ color: 'white' }}>{moment(ticker.lastUpdateTime).format('YYYY-MM-DD hh:mm:ss a')}</Typography>}
-                        style={{
-                            width: 200
-                        }} /> */}
-                    <Button variant="contained" color="primary">
+                        <Button variant="contained" color="primary" href={bySymbolLink}>
                             View All Exchanges
                         </Button>
                 </ListItem>

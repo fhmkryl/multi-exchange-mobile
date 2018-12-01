@@ -14,8 +14,11 @@ export default class ExchangeList extends React.Component<ExchangeListProps> {
     render() {
         const exchangeList = this.props.exchangeList;
         return (
-            <div style={{width:800}}>
-                <List>
+            <div style={{width:600}}>
+                <List
+                    style={{
+                        backgroundColor: '#161616'
+                    }}>
                     {
                         exchangeList.map((exchange, index) => {
                             return <ExchangeRow 
