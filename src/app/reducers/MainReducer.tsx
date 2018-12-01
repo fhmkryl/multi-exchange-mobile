@@ -24,22 +24,13 @@ const mainReducer = (state: any = initState, action: any) => {
         exchanges: exchanges
       };
     case 'GET_TICKERS_BY_EXCHANGE_ACTION':
-      let filteredResult = action.tickersByExchange;
-      if (state.filterTickersByExchangeText) {
-        filteredResult = filteredResult.filter((item: TickerModel) =>
-          item.symbol.toLowerCase().indexOf(state.filterTickersByExchangeText.toLowerCase()) > -1);
-      }
-
-      console.log(action.filterBy);
-      filteredResult = filteredResult.filter((item: TickerModel) =>
-        item.symbol.toLowerCase().endsWith(action.filterBy.toLowerCase()));
-
-      filteredResult = sortTickers(filteredResult);
+      let tickers = filterTickersByExchange(action, state);
+      tickers = sortTickers(tickers);
 
       return {
         ...state,
         isLoading: false,
-        tickersByExchange: filteredResult
+        tickersByExchange: tickers
       };
     case 'SET_FILTER_TICKERS_BY_EXCHANGE_ACTION':
       return {
@@ -61,6 +52,20 @@ const sortExchanges = (exchanges: ExchangeModel[]): ExchangeModel[] => {
   exchangeList.OrderBy(p => p.status).ThenBy(p => p.name);
 
   return exchangeList.ToArray();
+}
+
+const filterTickersByExchange = (action: any, state: any): TickerModel[] => {
+  let filteredResult = action.tickersByExchange;
+  filteredResult = filteredResult.filter((item: TickerModel) => item.exchangeName.toLowerCase() === action.exchangeName.toLowerCase());
+  if (state.filterTickersByExchangeText) {
+    filteredResult = filteredResult.filter((item: TickerModel) =>
+      item.symbol.toLowerCase().indexOf(state.filterTickersByExchangeText.toLowerCase()) > -1);
+  }
+
+  filteredResult = filteredResult.filter((item: TickerModel) =>
+    item.symbol.toLowerCase().endsWith(action.filterBy.toLowerCase()));
+
+  return filteredResult;
 }
 
 const sortTickers = (tickers: TickerModel[]): TickerModel[] => {

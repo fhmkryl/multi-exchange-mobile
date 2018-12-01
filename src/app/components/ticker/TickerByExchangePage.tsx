@@ -11,7 +11,7 @@ interface TickerByExchangePageProps extends RouteProps {
     filterText: string,
     exchangeName: string,
     tickersByExchange: TickerModel[],
-    getTickersByExchange: (tickers: TickerModel[], filterBy: string) => TickerModel[],
+    getTickersByExchange: (tickers: TickerModel[], exchangeName: string, filterBy: string) => TickerModel[],
     setFilterTickerByExchange: (filterText: string) => void,
     setIsLoadingFlag: (isLoadingFlag: boolean) => void
 }
@@ -22,8 +22,8 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 
         this.state = {
             isLoading: true,
-            tabIndex : 0,
-            filterBy:'BTC',
+            tabIndex: 0,
+            filterBy: 'BTC',
             filterText: '',
             exchangeName: this.props.match.params.exchange,
             tickersByExchange: []
@@ -32,7 +32,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 
     handleTabChange = (event: any, value: number) => {
         let filterBy = 'BTC';
-        if(value === 1){
+        if (value === 1) {
             filterBy = 'USDT';
         }
 
@@ -49,7 +49,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                 tickerList.push(newItem);
             });
 
-            self.props.getTickersByExchange(tickerList, self.state.filterBy);
+            self.props.getTickersByExchange(tickerList, self.state.exchangeName, self.state.filterBy);
         });
     }
 
@@ -62,7 +62,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 
     render() {
         const tickers = this.props.tickersByExchange;
-        
+
         let tabIndex = this.state.tabIndex;
         let loaderPanel = <div></div>;
         let tickersPanel = <div></div>;
@@ -88,7 +88,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                     style={{ width: 600 }}
                     onChange={this.onSearchChangeHandler()}
                 />
-                <div style={{width:600}}>
+                <div style={{ width: 600 }}>
                     <Paper>
                         <Tabs
                             value={tabIndex}
@@ -96,17 +96,16 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                             centered
                             style={{
                                 backgroundColor: '#3E3E3E',
-                                color:'white'
+                                color: 'white'
                             }}
-                            indicatorColor = 'secondary'
                         >
-                        <Tab label="BTC"/>
-                        <Tab label="USDT" />
+                            <Tab label="BTC" />
+                            <Tab label="USDT" />
                         </Tabs>
                     </Paper>
                     {
                         <Typography component="div">
-                             {tickersPanel}
+                            {tickersPanel}
                         </Typography>
                     }
                 </div>
@@ -129,8 +128,8 @@ const mapDispatchToProps = (dispatch: any) => {
         setIsLoadingFlag: (isLoading: boolean) => {
             dispatch({ type: 'SET_IS_LOADING_ACTION', isLoading: isLoading })
         },
-        getTickersByExchange: (tickers: TickerModel[], filterBy: string) => {
-            dispatch({ type: 'GET_TICKERS_BY_EXCHANGE_ACTION', tickersByExchange: tickers, filterBy:filterBy })
+        getTickersByExchange: (tickers: TickerModel[], exchangeName: string, filterBy: string) => {
+            dispatch({ type: 'GET_TICKERS_BY_EXCHANGE_ACTION', tickersByExchange: tickers, exchangeName: exchangeName, filterBy: filterBy });
         },
         setFilterTickerByExchange: (filterText: string) => {
             dispatch({ type: 'SET_FILTER_TICKERS_BY_EXCHANGE_ACTION', filterTickersByExchangeText: filterText })
