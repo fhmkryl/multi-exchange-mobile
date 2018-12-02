@@ -45,12 +45,15 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
     componentDidMount = () => {
         let self = this;
         const socket = socketIOClient('http://localhost:2999');
+        socket.emit('subscribe', self.state.exchangeName);
         socket.on('onTickersReceived', function (data: any) {
             let tickerList: TickerModel[] = [];
             data.tickerList.map((item: any) => {
                 let newItem = new TickerModel(item);
                 tickerList.push(newItem);
             });
+
+            console.log(tickerList);
 
             self.props.getTickersByExchange(tickerList, self.state.exchangeName, self.state.filterBy);
         });
