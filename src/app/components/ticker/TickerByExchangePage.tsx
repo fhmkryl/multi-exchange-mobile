@@ -35,6 +35,9 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
         if (value === 1) {
             filterBy = 'USDT';
         }
+        if(value === 2) {
+            filterBy = 'ETH';
+        }
 
         this.setState({ tabIndex: value, filterBy: filterBy });
     };
@@ -101,6 +104,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                         >
                             <Tab label="BTC" />
                             <Tab label="USDT" />
+                            <Tab label="ETH" />
                         </Tabs>
                     </Paper>
                     {
