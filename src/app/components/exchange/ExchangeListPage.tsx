@@ -52,10 +52,10 @@ class ExchangeListPage extends React.Component<ExchangeListPageProps> {
     render() {
         const exchanges = this.props.exchanges;
 
-        if (this.props.isLoading) {
+        if (this.props.isLoading || !exchanges || exchanges.length === 0) {
             return (
                 <div style={{ width: 600 }}>
-                    <LinearProgress variant="query" />
+                    <LinearProgress variant="query"  style={{backgroundColor:'#FFCC00'}}/>
                 </div>
             )
         }

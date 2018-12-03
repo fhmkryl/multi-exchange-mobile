@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import socketIOClient from 'socket.io-client';
 import TickerModel from 'app/models/TickerModel';
 import TickerList from './TickerList';
-import { TextField, LinearProgress, ListItem, ListItemText, Typography, Tabs, Tab, AppBar, Paper } from '@material-ui/core';
+import { TextField, LinearProgress, Typography, Tabs, Tab, Paper } from '@material-ui/core';
 import { RouteProps } from 'react-router';
 
 interface TickerByExchangePageProps extends RouteProps {
@@ -54,7 +54,6 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
             });
 
             console.log(tickerList);
-
             self.props.getTickersByExchange(tickerList, self.state.exchangeName, self.state.filterBy);
         });
     }
@@ -72,9 +71,9 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
         let tabIndex = this.state.tabIndex;
         let loaderPanel = <div></div>;
         let tickersPanel = <div></div>;
-        if (this.props.isLoading) {
+        if (this.props.isLoading || !tickers || tickers.length ===0) {
             loaderPanel = <div style={{ width: 600 }}>
-                <LinearProgress variant="query" />
+                <LinearProgress variant="query"  style={{backgroundColor:'#FFCC00'}}/>
             </div>
         }
         else {
@@ -91,7 +90,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                     label="Search"
                     type="search"
                     margin="normal"
-                    style={{ width: 600 }}
+                    style={{width:600}}
                     onChange={this.onSearchChangeHandler()}
                 />
                 <div style={{ width: 600 }}>
@@ -104,6 +103,11 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                                 backgroundColor: '#3E3E3E',
                                 color: 'white'
                             }}
+                            TabIndicatorProps={{
+                                style: {
+                                  backgroundColor: "#FFCC00"
+                                }
+                              }}
                         >
                             <Tab label="BTC" />
                             <Tab label="USDT" />
