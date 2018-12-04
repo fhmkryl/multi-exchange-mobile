@@ -3,17 +3,8 @@ import { ListItem, ListItemText, Button, Divider, Typography } from "@material-u
 import * as moment from 'moment'
 import TickerModel from "app/models/TickerModel";
 
-import { withStyles } from '@material-ui/core/styles';
-const styles = (theme: any) => ({
-    root: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: 'red'
-    },
-  });
-
 interface TickerRowProps {
-    index:number,
+    index: number,
     ticker: TickerModel
 }
 
@@ -23,14 +14,20 @@ class TickerRow extends React.Component<TickerRowProps>{
     }
 
     render() {
-        const ticker = this.props.ticker;
+        let ticker = this.props.ticker;
+
         let tickerColor = 'white';
-        if(ticker.direction === 'Up')
+        let percentageColor = 'gray';
+        if (ticker.direction === 'Up') {
             tickerColor = '#8AB82F';
-        if(ticker.direction === 'Down')
-            tickerColor = '#EA0087';
-        
-        const bySymbolLink = "/#/by_symbol/"+ticker.symbol;
+            percentageColor = tickerColor;
+        }
+        if (ticker.direction === 'Down') { 
+            tickerColor = '#EA0087'; 
+            percentageColor = tickerColor;
+        }
+
+        const bySymbolLink = "/#/by_symbol/" + ticker.symbol;
 
         return (
             <div>
@@ -41,7 +38,11 @@ class TickerRow extends React.Component<TickerRowProps>{
                     button
                 >
                     <ListItemText
-                        primary={<Typography style={{ color: tickerColor }}>{ticker.symbol}</Typography>}
+                        primary={<Typography style={{ color: tickerColor }}>
+                            {ticker.symbol}
+                            <br></br>
+                            <div style={{fontSize:'xx-small'}}>{moment(ticker.lastUpdateTime).format('hh:mm:ss')}</div>
+                        </Typography>}
                         style={{
                             width: 50
                         }} />
@@ -50,11 +51,26 @@ class TickerRow extends React.Component<TickerRowProps>{
                         style={{
                             width: 50
                         }} />
-                        <Button variant="contained" color="primary" href={bySymbolLink}>
-                            View All Exchanges
+                    <ListItemText
+                        primary=
+                        {
+                            <Typography style={{ color: tickerColor, fontSize: 'xx-small' }}>
+                                H:&nbsp;{ticker.highPrice}
+                                <br></br>
+                                L:&nbsp;{ticker.lowPrice}
+                            </Typography>
+                        }
+                        style={{
+                            width: 50
+                        }} />
+                    <Button variant="contained" style={{ color: 'white', backgroundColor: percentageColor, marginRight: 10, width:90}}>
+                        {ticker.priceChangePercent} %
+                        </Button>
+                    <Button variant="contained" color="primary" href={bySymbolLink}>
+                        Markets
                         </Button>
                 </ListItem>
-                <Divider style={{backgroundColor:"#3E3E3E"}}/>
+                <Divider style={{ backgroundColor: "#3E3E3E" }} />
             </div>
         )
     }

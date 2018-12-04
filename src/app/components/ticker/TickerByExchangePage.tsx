@@ -53,7 +53,6 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
                 tickerList.push(newItem);
             });
 
-            console.log(tickerList);
             self.props.getTickersByExchange(tickerList, self.state.exchangeName, self.state.filterBy);
         });
     }
