@@ -4,6 +4,7 @@ import ExchangeListPage from 'app/components/Exchange/ExchangeListPage';
 import TickerByExchangePage from 'app/components/ticker/TickerByExchangePage';
 import { Grid } from '@material-ui/core';
 import Header from 'app/components/common/Header';
+import TickerBySymbolPage from 'app/components/ticker/TickerBySymbolPage';
 
 export const AppRouter: React.StatelessComponent<{}> = () => {
   return (
@@ -26,6 +27,7 @@ export const AppRouter: React.StatelessComponent<{}> = () => {
                 <Route path="/" component={ExchangeListPage} exact={true} />
                 <Route path="/exchanges" component={ExchangeListPage} exact={true} />
                 <Route path="/by_exchange/:exchange" component={TickerByExchangePage} exact={true} />
+                <Route path="/by_symbol/:symbol" component={TickerBySymbolPage} exact={true} />
               </Grid>
             </Grid>
           </Grid>

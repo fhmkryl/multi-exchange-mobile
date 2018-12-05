@@ -5,6 +5,7 @@ import TickerModel from 'app/models/TickerModel';
 import TickerList from './TickerList';
 import { TextField, LinearProgress, Typography, Tabs, Tab, Paper } from '@material-ui/core';
 import { RouteProps } from 'react-router';
+import { TickerType } from 'app/models/TickerType';
 
 interface TickerByExchangePageProps extends RouteProps {
     isLoading: boolean,
@@ -16,10 +17,12 @@ interface TickerByExchangePageProps extends RouteProps {
     setIsLoadingFlag: (isLoadingFlag: boolean) => void
 }
 
+let socket : any ;
 class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
     constructor(props: TickerByExchangePageProps) {
         super(props);
 
+        socket = socketIOClient('http://localhost:2999');
         this.state = {
             isLoading: true,
             tabIndex: 0,
@@ -44,9 +47,8 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 
     componentDidMount = () => {
         let self = this;
-        const socket = socketIOClient('http://localhost:2999');
-        socket.emit('subscribe', self.state.exchangeName);
-        socket.on('onTickersReceived', function (data: any) {
+        socket.emit('subscribeToExchange', self.state.exchangeName);
+        socket.on('onTickersReceivedByExchange', function (data: any) {
             let tickerList: TickerModel[] = [];
             data.tickerList.map((item: any) => {
                 let newItem = new TickerModel(item);
@@ -55,6 +57,10 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
 
             self.props.getTickersByExchange(tickerList, self.state.exchangeName, self.state.filterBy);
         });
+    }
+
+    componentWillUnmount = () => {
+        socket.close();
     }
 
 
@@ -76,7 +82,7 @@ class TickerByExchangePage extends React.Component<TickerByExchangePageProps> {
             </div>
         }
         else {
-            tickersPanel = <TickerList tickerList={tickers} />
+            tickersPanel = <TickerList tickerType={TickerType.ByExchange} tickerList={tickers} />
         }
 
         return (

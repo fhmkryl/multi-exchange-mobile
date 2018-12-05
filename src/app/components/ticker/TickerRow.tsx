@@ -2,9 +2,11 @@ import * as React from "react";
 import { ListItem, ListItemText, Button, Divider, Typography } from "@material-ui/core";
 import * as moment from 'moment'
 import TickerModel from "app/models/TickerModel";
+import { TickerType } from "app/models/TickerType";
 
 interface TickerRowProps {
     index: number,
+    tickerType: TickerType,
     ticker: TickerModel
 }
 
@@ -14,20 +16,33 @@ class TickerRow extends React.Component<TickerRowProps>{
     }
 
     render() {
-        let ticker = this.props.ticker;
+        const { index, tickerType, ticker } = this.props;
+
+        let mainText = ticker.symbol;
+        if (tickerType === TickerType.BySymbol) {
+            mainText = ticker.exchangeName;
+        }
 
         let tickerColor = 'white';
         let percentageColor = 'gray';
+
         if (ticker.direction === 'Up') {
             tickerColor = '#8AB82F';
-            percentageColor = tickerColor;
         }
-        if (ticker.direction === 'Down') { 
-            tickerColor = '#EA0087'; 
-            percentageColor = tickerColor;
+        if (ticker.direction === 'Down') {
+            tickerColor = '#EA0087';
+        }
+        if (parseFloat(ticker.priceChangePercent) > 0) {
+            percentageColor = '#8AB82F';
+        }
+        if (parseFloat(ticker.priceChangePercent) < 0) {
+            percentageColor = '#EA0087';
         }
 
-        const bySymbolLink = "/#/by_symbol/" + ticker.symbol;
+        let marketsLink = "/#/by_symbol/" + ticker.symbol;
+        if (tickerType === TickerType.BySymbol) {
+            marketsLink = "/#/by_exchange/" + ticker.exchangeName;
+        }
 
         return (
             <div>
@@ -38,35 +53,55 @@ class TickerRow extends React.Component<TickerRowProps>{
                     button
                 >
                     <ListItemText
-                        primary={<Typography style={{ color: tickerColor }}>
-                            {ticker.symbol}
-                            <br></br>
-                            <div style={{fontSize:'xx-small'}}>{moment(ticker.lastUpdateTime).format('hh:mm:ss')}</div>
-                        </Typography>}
-                        style={{
-                            width: 50
-                        }} />
+                            primary = 
+                            {
+                                <Typography style={{color:'white'}}>
+                                    #{index + 1}
+                                </Typography>
+                            }
+                            style={{
+                                marginLeft:-20,
+                                marginRight:-60
+                            }}
+                        />
                     <ListItemText
-                        primary={<Typography style={{ color: tickerColor }}>{ticker.price}</Typography>}
+                        primary={<Typography style={{ color: tickerColor }}>
+                            {mainText}
+                            <br></br>
+                            {/* <div style={{fontSize:'xx-small'}}>{moment(ticker.lastUpdateTime).format('hh:mm:ss')}</div> */}
+                            <div style={{ color: 'white', fontSize: '10px' }}>Vol {ticker.volume}</div>
+                        </Typography>}
                         style={{
                             width: 50
                         }} />
                     <ListItemText
                         primary=
                         {
-                            <Typography style={{ color: tickerColor, fontSize: 'xx-small' }}>
-                                H:&nbsp;{ticker.highPrice}
+                            <Typography style={{ color: tickerColor }}>
+                                {ticker.price}
                                 <br></br>
-                                L:&nbsp;{ticker.lowPrice}
+                                <div style={{ color: 'white', fontSize: '10px' }}>$ 4000</div>
                             </Typography>
                         }
                         style={{
                             width: 50
                         }} />
-                    <Button variant="contained" style={{ color: 'white', backgroundColor: percentageColor, marginRight: 10, width:90}}>
+                    <ListItemText
+                        primary=
+                        {
+                            <Typography style={{ color: 'white', fontSize: '10px' }}>
+                                H&nbsp;{ticker.highPrice}
+                                <br></br>
+                                L&nbsp;{ticker.lowPrice}
+                            </Typography>
+                        }
+                        style={{
+                            width: 50
+                        }} />
+                    <Button variant="contained" style={{ color: 'white', backgroundColor: percentageColor, marginRight: 10, width: 90 }}>
                         {ticker.priceChangePercent} %
                         </Button>
-                    <Button variant="contained" color="primary" href={bySymbolLink}>
+                    <Button variant="contained" color="primary" href={marketsLink}>
                         Markets
                         </Button>
                 </ListItem>
