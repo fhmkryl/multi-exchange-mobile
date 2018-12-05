@@ -32,10 +32,10 @@ class TickerRow extends React.Component<TickerRowProps>{
         if (ticker.direction === 'Down') {
             tickerColor = '#EA0087';
         }
-        if (parseFloat(ticker.priceChangePercent) > 0) {
+        if (ticker.priceChangePercent > 0) {
             percentageColor = '#8AB82F';
         }
-        if (parseFloat(ticker.priceChangePercent) < 0) {
+        if (ticker.priceChangePercent < 0) {
             percentageColor = '#EA0087';
         }
 
@@ -69,7 +69,7 @@ class TickerRow extends React.Component<TickerRowProps>{
                             {mainText}
                             <br></br>
                             {/* <div style={{fontSize:'xx-small'}}>{moment(ticker.lastUpdateTime).format('hh:mm:ss')}</div> */}
-                            <div style={{ color: 'white', fontSize: '10px' }}>Vol {ticker.volume}</div>
+                            <div style={{ color: 'white', fontSize: '10px' }}>Vol {ticker.volume.toLocaleString()}</div>
                         </Typography>}
                         style={{
                             width: 50
@@ -78,9 +78,9 @@ class TickerRow extends React.Component<TickerRowProps>{
                         primary=
                         {
                             <Typography style={{ color: tickerColor }}>
-                                {ticker.price}
+                                {ticker.price.toLocaleString()}
                                 <br></br>
-                                <div style={{ color: 'white', fontSize: '10px' }}>$ 4000</div>
+                                <div style={{ color: 'white', fontSize: '10px' }}>${ticker.priceInDollar.toLocaleString()}</div>
                             </Typography>
                         }
                         style={{
@@ -90,16 +90,16 @@ class TickerRow extends React.Component<TickerRowProps>{
                         primary=
                         {
                             <Typography style={{ color: 'white', fontSize: '10px' }}>
-                                H&nbsp;{ticker.highPrice}
+                                H&nbsp;{ticker.highPrice.toLocaleString()}
                                 <br></br>
-                                L&nbsp;{ticker.lowPrice}
+                                L&nbsp;{ticker.lowPrice.toLocaleString()}
                             </Typography>
                         }
                         style={{
                             width: 50
                         }} />
                     <Button variant="contained" style={{ color: 'white', backgroundColor: percentageColor, marginRight: 10, width: 90 }}>
-                        {ticker.priceChangePercent} %
+                        {ticker.priceChangePercent.toLocaleString()} %
                         </Button>
                     <Button variant="contained" color="primary" href={marketsLink}>
                         Markets
